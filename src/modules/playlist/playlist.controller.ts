@@ -5,6 +5,7 @@ import * as process from 'process';
 import { UtilsLib } from '../../lib/spotify/utilsLib';
 import { Response } from 'express';
 import { PlaylistService } from '../../playlist/playlist.service';
+import { ArtistLib } from '../../lib/spotify/artistLib';
 
 @Controller('playlist')
 export class PlaylistController {
@@ -33,20 +34,34 @@ export class PlaylistController {
     @Query('secondary') secondary: string,
     @Res() res: Response,
   ) {
+    if (secondary && secondary != 'true') {
+      res.status(400).send('Invalid query parameter');
+    }
+
     const client = new SpotifyWebApi(this.credentials);
+    const libraryLib = new LibraryLib(client);
+    const artistLib = new ArtistLib(client);
 
     client.setAccessToken(session.accessToken);
-
-    const libraryLib = new LibraryLib(client);
 
     const allTracks = await libraryLib.getSavedTracks();
 
     for (let i = 0; i < allTracks.length; i++) {
-      // check if artist is in hip hop list
+      // check if secondary is true and artist is not in hip hop list
       if (
-        this.playlistService.hipHopArtists.includes(
-          allTracks[i].track.artists[0].id,
-        ) == true
+        !(
+          secondary == 'true' &&
+          !this.playlistService.hipHopArtists.includes(
+            allTracks[i].track.artists[0].id,
+          ) &&
+          (await artistLib.checkIfIsRapper(allTracks[i].track.artists[0].id))
+        ) ||
+        // check if artist is in hip hop list
+        !(
+          this.playlistService.hipHopArtists.includes(
+            allTracks[i].track.artists[0].id,
+          ) == true
+        )
       ) {
         // get all tracks of artist and add to playlist
         const tracksArtist = await libraryLib.getSavedTracksByArtist(
