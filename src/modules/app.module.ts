@@ -5,13 +5,12 @@ import {
   RequestMethod,
 } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
-import { CheckAuthMiddleware } from '../middlewares/check-auth/check-auth.middleware';
 import { PlaylistModule } from './playlist/playlist.module';
+import { CheckAuthMiddleware } from '../middlewares/check-auth.middleware';
 
 @Module({
   imports: [AuthModule, PlaylistModule],
   controllers: [],
-  providers: [],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

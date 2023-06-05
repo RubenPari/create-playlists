@@ -4,8 +4,8 @@ import { LibraryLib } from '../../lib/spotify/libraryLib';
 import * as process from 'process';
 import { UtilsLib } from '../../lib/spotify/utilsLib';
 import { Response } from 'express';
-import { PlaylistService } from '../../playlist/playlist.service';
 import { ArtistLib } from '../../lib/spotify/artistLib';
+import { PlaylistService } from './playlist.service';
 
 @Controller('playlist')
 export class PlaylistController {
@@ -20,13 +20,10 @@ export class PlaylistController {
   }
 
   /**
-   * @description Create (overwrite
+   * Create (overwrite
    * if not empty) a hip hop playlist
-   * @param session
-   * @param secondary - if true then
-   * create with hip-hop artist NOT
-   * following
-   * @param res
+   * if true then create with hip-hop
+   * artist NOT following
    */
   @Post('/create/hip-hop')
   async createHipHopPlaylist(
