@@ -39,12 +39,13 @@ export class PlaylistController {
     const libraryLib = new LibraryLib(client);
     const artistLib = new ArtistLib(client);
 
+    // get access token from session
     client.setAccessToken(session.accessToken);
 
     const allTracks = await libraryLib.getSavedTracks();
 
     for (let i = 0; i < allTracks.length; i++) {
-      // check if secondary is true and artist is not in hip hop list
+      // check if secondary param is true and artist is not in hip hop list
       if (
         !(
           secondary == 'true' &&
@@ -89,10 +90,11 @@ export class PlaylistController {
     @Res() res: Response,
   ) {
     const client = new SpotifyWebApi(this.credentials);
-
-    client.setAccessToken(session.accessToken);
-
     const libraryLib = new LibraryLib(client);
+    const utilsLib = new UtilsLib(client);
+
+    // get access token from session
+    client.setAccessToken(session.accessToken);
 
     const allTracks = await libraryLib.getSavedTracks();
 
@@ -109,7 +111,6 @@ export class PlaylistController {
         );
 
         // convert array of objects to array of ids
-        const utilsLib = new UtilsLib(client);
         const tracksIdArtist = utilsLib.convertArrayObjectsToIds(tracksArtist);
 
         // add tracks to playlist
