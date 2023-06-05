@@ -46,9 +46,7 @@ export class PlaylistLib {
    * Delete all tracks from a playlist
    */
   async deleteAllTracksFromPlaylist(playlistId: string) {
-    const { tracks, snapshotId } = await this.getPlaylistTracks(
-      playlistId,
-    );
+    const { tracks, snapshotId } = await this.getPlaylistTracks(playlistId);
 
     const uris = tracks.map((track) => track.track.uri);
 
@@ -56,12 +54,13 @@ export class PlaylistLib {
     let offset = 0;
 
     while (true) {
-      await this.client.removeTracksFromPlaylist(
+      const deleteTracks = await this.client.removeTracksFromPlaylistByPosition(
         playlistId,
-        uris.slice(offset, offset + limit),
+        uris.slice(offset, offset + limit).map(Number),
+        snapshotId,
       );
 
-      if (offset + limit < uris.length) {
+      if (deleteTracks.body.snapshot_id) {
         offset += limit;
       } else {
         break;
