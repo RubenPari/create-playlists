@@ -45,7 +45,12 @@ export class PlaylistController {
     const allTracks = await libraryLib.getSavedTracks();
 
     for (let i = 0; i < allTracks.length; i++) {
-      // check if secondary param is true and artist is not in hip hop list
+      // check 2 possible conditions
+      // for add track to playlist
+
+      // 1. check if secondary param is true
+      // and artist is not in hip hop list
+      // (case of hip hop artist not following)
       if (
         !(
           secondary == 'true' &&
@@ -54,13 +59,19 @@ export class PlaylistController {
           ) &&
           (await artistLib.checkIfIsRapper(allTracks[i].track.artists[0].id))
         ) ||
-        // check if artist is in hip hop list
+        // 2. check if artist is in hip hop list
+        // (case of hip hop artist following)
         !(
           this.playlistService.hipHopArtists.includes(
             allTracks[i].track.artists[0].id,
           ) == true
         )
       ) {
+        console.log(
+          'if passato' + console.log(allTracks[i].track.artists[0].name),
+        );
+
+        /**
         // get all tracks of artist and add to playlist
         const tracksArtist = await libraryLib.getSavedTracksByArtist(
           allTracks[i].track.artists[0].id,
@@ -79,7 +90,10 @@ export class PlaylistController {
         if (!added) {
           res.status(500).send('Error adding tracks to playlist');
         }
+        */
       }
+
+      console.log('if non passato' + allTracks[i].track.artists[0].name);
     }
     res.status(200).send('Hip hop playlist created');
   }

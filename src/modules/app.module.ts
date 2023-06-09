@@ -7,9 +7,10 @@ import {
 import { AuthModule } from './auth/auth.module';
 import { PlaylistModule } from './playlist/playlist.module';
 import { CheckAuthMiddleware } from '../middlewares/check-auth.middleware';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [AuthModule, PlaylistModule],
+  imports: [ConfigModule.forRoot(), AuthModule, PlaylistModule],
   controllers: [],
 })
 export class AppModule implements NestModule {

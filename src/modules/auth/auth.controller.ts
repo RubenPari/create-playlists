@@ -5,32 +5,35 @@ import { randomStringGenerator } from '@nestjs/common/utils/random-string-genera
 
 @Controller('auth')
 export class AuthController {
-  private readonly clientId;
-  private readonly clientSecret;
-  private readonly redirectUri;
-  private state;
-  private readonly scope;
+  private readonly clientId: string;
+  private readonly clientSecret: string;
+  private readonly redirectUri: string;
+  private state: string;
+  private readonly scopes: string[];
 
   constructor() {
     this.clientId = process.env.CLIENT_ID;
     this.clientSecret = process.env.CLIENT_SECRET;
     this.redirectUri = process.env.REDIRECT_URI;
-    this.scope = process.env.SCOPE;
+    this.scopes = process.env.SCOPES.split(',');
     this.state = '';
   }
 
   @Get('/login')
   login(@Res() res: Response) {
-    const spotifyApi = new SpotifyWebApi({
-      redirectUri: this.redirectUri,
+    const spotifyApi = new SpotifyWebApi();
+
+    spotifyApi.setCredentials({
       clientId: this.clientId,
+      clientSecret: this.clientSecret,
+      redirectUri: this.redirectUri,
     });
 
     // generate random string for state
     this.state = randomStringGenerator();
 
     // Create the authorization URL
-    const authorizeURL = spotifyApi.createAuthorizeURL(this.scope, this.state);
+    const authorizeURL = spotifyApi.createAuthorizeURL(this.scopes, this.state);
 
     res.redirect(authorizeURL);
   }

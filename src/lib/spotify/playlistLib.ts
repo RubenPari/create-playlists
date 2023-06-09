@@ -56,7 +56,7 @@ export class PlaylistLib {
     while (true) {
       const deleteTracks = await this.client.removeTracksFromPlaylistByPosition(
         playlistId,
-        uris.slice(offset, offset + limit).map(Number),
+        uris.slice(offset, offset + limit).map(Number), // split array into chunks of 100 (from string to number)
         snapshotId,
       );
 
